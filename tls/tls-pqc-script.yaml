@@ -1,0 +1,38 @@
+id: ssl-pqc-kex-script
+
+info:
+  name: ssl-pqc-kex-script
+  author: lwijnsma
+  severity: info
+  tags: code,ssl,pqc
+
+code:
+  - engine:
+      - sh
+    source: |
+      CIPHERS='ALL:eNull'
+      DELAY=${2:-0.1}
+      SERVER=$(cat - | cut -f1 -d"?")
+      KEMS=$(openssl list -kem-algorithms -propquery "provider=oqsprovider" | grep -o '^[^@]\+')
+
+      echo Using $(openssl version).
+
+      echo $SERVER
+
+      for kem in $KEMS
+      do
+        if openssl s_client -tls1_3 -groups $kem -connect $SERVER > /dev/null 2>&1; then
+          result='YES'
+        else
+          result="NO"
+        fi
+        printf '%s - %s \n' "$kem" "$result"
+        sleep $DELAY
+      done
+    
+    extractors:
+      - type: regex
+        name: pqc-kex-supported
+        regex:
+          - "([A-Za-z0-9-_]*) - YES"
+# digest: 4a0a004730450221009bdf135ae045bf0ca3fe9c1b13e1bc5e5b924d6645f5809262c516d30d2f2ed002206d882eed61ca8d0e770a9eb28c1120be0504430664d830f0a84ea661061154bb:da4d584476d9356d743c44c5693a3aab

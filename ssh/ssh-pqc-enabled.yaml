@@ -1,0 +1,30 @@
+id: ssh-pqc-exchange-algo
+
+info:
+  name: SSH PQC Key Exchange Algorithms Enabled
+  author: lwijnsma
+  severity: info
+  metadata:
+    verified: true
+    max-request: 2
+
+javascript:
+  - pre-condition: |
+      isPortOpen(Host,Port);
+    code: |
+      let m = require("nuclei/ssh");
+      let c = m.SSHClient();
+      let response = c.ConnectSSHInfoMode(Host, Port);
+      Export(response);
+    args:
+      Host: "{{Host}}"
+      Port: "22"
+
+    extractors:
+      - type: regex
+        name: pqc-suite
+        regex:
+          - "sntrup761x25519-sha512@openssh\\.com"        
+
+    
+# digest: 490a00463044022044b32a09e27ef0575f4009b7db1b68cf2de6f58b2afb5aec56eb518eb49596410220277166dc982c9ac9520bd71f1fc9eefbef5379df0771e5fd84695a48d46fc357:da4d584476d9356d743c44c5693a3aab

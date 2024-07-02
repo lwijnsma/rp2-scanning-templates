@@ -1,0 +1,52 @@
+id: recommended-cipher-suites
+
+info:
+  name: Recommended Cipher Suites Detection
+  author: Karlo, Laurens
+  severity: info
+  description: Detects the presence of recommended cipher suites based on the provided list.
+  reference:
+    - https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-4
+  metadata:
+    max-request: 2
+  tags: ssl,tls,crypto,recommended,cipher
+ssl:
+  - address: "{{Host}}:{{Port}}"
+    min_version: tls12
+    max_version: tls13
+
+    extractors:
+      - type: dsl
+        dsl:
+          - "tls_version, cipher"
+    matchers:
+      - type: word
+        name: recommended-cipher
+        part: cipher
+        words:
+          - "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256"
+          - "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"
+          - "TLS_DHE_PSK_WITH_AES_128_GCM_SHA256"
+          - "TLS_DHE_PSK_WITH_AES_256_GCM_SHA384"
+          - "TLS_AES_128_GCM_SHA256"
+          - "TLS_AES_256_GCM_SHA384"
+          - "TLS_CHACHA20_POLY1305_SHA256"
+          - "TLS_AES_128_CCM_SHA256"
+          - "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+          - "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+          - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+          - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+          - "TLS_DHE_RSA_WITH_AES_128_CCM"
+          - "TLS_DHE_RSA_WITH_AES_256_CCM"
+          - "TLS_DHE_PSK_WITH_AES_128_CCM"
+          - "TLS_DHE_PSK_WITH_AES_256_CCM"
+          - "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256"
+          - "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"
+          - "TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256"
+          - "TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256"
+          - "TLS_DHE_PSK_WITH_CHACHA20_POLY1305_SHA256"
+          - "TLS_ECDHE_PSK_WITH_AES_128_GCM_SHA256"
+          - "TLS_ECDHE_PSK_WITH_AES_256_GCM_SHA384"
+          - "TLS_ECDHE_PSK_WITH_AES_128_CCM_SHA256"
+        condition: or
+# digest: 4a0a00473045022100b36633889a6a0ff33ed603215f0a235f44fea3bfaa4804abeff172793e23e8690220040e141aab7622f4089db7e24d7cf920f0618fd8790dd666f0152fe38ddf3102:da4d584476d9356d743c44c5693a3aab
